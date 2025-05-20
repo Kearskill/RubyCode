@@ -1,4 +1,5 @@
 # https://codeforces.com/problemset/problem/2108/A
+# 800 elo
 # puts 'Input number of test cases:'
 n = gets.to_i
 
