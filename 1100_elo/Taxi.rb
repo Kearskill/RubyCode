@@ -11,7 +11,7 @@ arr.each do |c|
     freq[c] += 1
 end
 
-counter = freq[4].to_i
+# counter = freq[4].to_i
 # puts freq
 # puts freq[0] # not used
 # puts freq[1] # 1
@@ -19,79 +19,91 @@ counter = freq[4].to_i
 # puts freq[3] # 3
 # puts freq[4] # 4 
 
-if (freq[1] - freq[3]).abs >0 # groups 1 and 3
-    skibidi = (freq[1] - freq[3]).abs
-    bigger = freq[1]>=freq[3] ? freq[1] : freq[3]
-    remainder = (bigger - skibidi).abs
-    counter += remainder
-    freq[1] = (freq[1] - remainder).abs
-    freq[3] = (freq[3] - remainder).abs # the remainder of group 3 can just use a car
-    counter += freq[3]
-elsif (freq[1] - freq[3]) == 0
-    counter += freq[1]
-    freq[1] = 0
-    freq[3] = 0 
-end
-# what left is group 1 and group 2
+# if (freq[1] - freq[3]).abs >0 # groups 1 and 3
+#     skibidi = (freq[1] - freq[3]).abs
+#     bigger = freq[1]>=freq[3] ? freq[1] : freq[3]
+#     remainder = (bigger - skibidi).abs
+#     counter += remainder
+#     freq[1] = (freq[1] - remainder).abs
+#     freq[3] = (freq[3] - remainder).abs # the remainder of group 3 can just use a car
+#     counter += freq[3]
+# elsif (freq[1] - freq[3]) == 0
+#     counter += freq[1]
+#     freq[1] = 0
+#     freq[3] = 0 
+# end
+# # what left is group 1 and group 2
 
-# groups 2 
-if freq[2] % 2 == 0 # if even
-    counter += freq[2] / 2
-    freq[2] = 0
-else # if odd 
-    counter += (freq[2] / 2).to_i
-    freq[2] = 1
-end
+# # groups 2 
+# if freq[2] % 2 == 0 # if even
+#     counter += freq[2] / 2
+#     freq[2] = 0
+# else # if odd 
+#     counter += (freq[2] / 2).to_i
+#     freq[2] = 1
+# end
 
 
-# garbage collect freq[2] pls
-# groups 1
-if freq[1] % 4 == 0 # if enoguh to group the lonelies
-    counter += freq[1] / 4
-    freq[1] = 0
-    if freq[2] == 1
-        counter+=1
-    end
-else
-    counter += freq[1] /4 
-    freq[1] %= 4
-    if freq[2] ==1 && freq[1] <= 2
-        freq[2] = 0
-        counter +=1 # groups the single 2 and 1 1 
-    end
-end
+# # garbage collect freq[2] pls
+# # groups 1
+# if freq[1] % 4 == 0 # if enoguh to group the lonelies
+#     counter += freq[1] / 4
+#     freq[1] = 0
+#     if freq[2] == 1
+#         counter+=1
+#     end
+# else
+#     counter += freq[1] /4 
+#     freq[1] %= 4
+#     if freq[2] ==1 && freq[1] <= 2
+#         freq[2] = 0
+#         counter +=1 # groups the single 2 and 1 1 
+#     end
+# end
 
-puts counter
+# puts counter
 
 # group 4 takes the same taxi
-counter = freq[4].to_i
+
+counter = 0
 
 # group 3 and 1 choose as much as possible
-if (freq[3] - freq[1]).abs > 0
+differences = (freq[3] - freq[1]).abs
+
+if differences > 0 && freq[3] >= 1 && freq[1] >=1 
     bigger = freq[1] >= freq[3] ? freq[1] : freq[3]
-    counter += bigger - (freq[3] - freq[1]).abs 
-    freq[3] -= (freq[3] - freq[1]).abs # the remainder of 3
-    freq[1] -= (freq[3] - freq[1]).abs
-else # if both group 3 and 1 is the same number
+    counter += bigger - differences 
+    freq[3] -= counter # the remainder of 3
+    freq[1] -= counter
+    if freq[3] >= 0 
+        counter += freq[3] # add the 3s 
+        freq[3] = 0
+    end
+elsif (freq[3]-freq[1]).abs == 0 && freq[3] >= 1# if both group 3 and 1 is the same number
     counter += freq[3].to_i
     freq[1] = 0 
+    freq[3] = 0
+end
+
+if freq[3] >= 1
+    counter += freq[3].to_i
     freq[3] = 0
 end
 
 # let group 2 combine with themselves
 
 if freq[2] % 2 == 0 # if even
-    counter += freq[2].to_i /2 
+    counter += freq[2] /2 
     freq[2] = 0
 else 
-    counter += freq[2].to_i /2
+    counter += freq[2] /2 
     freq[2] = 1
 end
 
 # if there is more than 1s and 2s
 if freq[1] >= 2 && freq[2] ==1 
     counter += 1
-    freq[1] -= 1
+    freq[1] -= 2
     freq[2] = 0
 end
 
@@ -101,6 +113,23 @@ if freq[2] == 1 && freq[1]<2
     freq[1] = 0
 end
 
+if freq[1] >=1 
+    if freq[1]>=4
+        counter += freq[1] / 4
+        if !(freq[1] % 4 ==0)
+            counter+=1
+        end
+    else
+        counter+= 1
+    end
+end
+
+
+if freq[4] >=1
+    counter += freq[4].to_i
+end
+
+puts counter
 
 
 # arr = t.times.map { gets.to_i }.sort.reverse
