@@ -19,19 +19,88 @@ counter = freq[4].to_i
 # puts freq[3] # 3
 # puts freq[4] # 4 
 
-if (freq[1] - freq[3]).abs >0
-
-
-a = 5
-b = 4
-
-if (a - b).abs > 0
-    skibidi = (a - b).abs # 1
-    remainder = (a - skibidi).abs # 4
+if (freq[1] - freq[3]).abs >0 # groups 1 and 3
+    skibidi = (freq[1] - freq[3]).abs
+    bigger = freq[1]>=freq[3] ? freq[1] : freq[3]
+    remainder = (bigger - skibidi).abs
     counter += remainder
-    a = (a - remainder).abs # 1
-    b = (b - remainder).abs # 0
+    freq[1] = (freq[1] - remainder).abs
+    freq[3] = (freq[3] - remainder).abs # the remainder of group 3 can just use a car
+    counter += freq[3]
+elsif (freq[1] - freq[3]) == 0
+    counter += freq[1]
+    freq[1] = 0
+    freq[3] = 0 
 end
+# what left is group 1 and group 2
+
+# groups 2 
+if freq[2] % 2 == 0 # if even
+    counter += freq[2] / 2
+    freq[2] = 0
+else # if odd 
+    counter += (freq[2] / 2).to_i
+    freq[2] = 1
+end
+
+
+# garbage collect freq[2] pls
+# groups 1
+if freq[1] % 4 == 0 # if enoguh to group the lonelies
+    counter += freq[1] / 4
+    freq[1] = 0
+    if freq[2] == 1
+        counter+=1
+    end
+else
+    counter += freq[1] /4 
+    freq[1] %= 4
+    if freq[2] ==1 && freq[1] <= 2
+        freq[2] = 0
+        counter +=1 # groups the single 2 and 1 1 
+    end
+end
+
+puts counter
+
+# group 4 takes the same taxi
+counter = freq[4].to_i
+
+# group 3 and 1 choose as much as possible
+if (freq[3] - freq[1]).abs > 0
+    bigger = freq[1] >= freq[3] ? freq[1] : freq[3]
+    counter += bigger - (freq[3] - freq[1]).abs 
+    freq[3] -= (freq[3] - freq[1]).abs # the remainder of 3
+    freq[1] -= (freq[3] - freq[1]).abs
+else # if both group 3 and 1 is the same number
+    counter += freq[3].to_i
+    freq[1] = 0 
+    freq[3] = 0
+end
+
+# let group 2 combine with themselves
+
+if freq[2] % 2 == 0 # if even
+    counter += freq[2].to_i /2 
+    freq[2] = 0
+else 
+    counter += freq[2].to_i /2
+    freq[2] = 1
+end
+
+# if there is more than 1s and 2s
+if freq[1] >= 2 && freq[2] ==1 
+    counter += 1
+    freq[1] -= 1
+    freq[2] = 0
+end
+
+if freq[2] == 1 && freq[1]<2
+    counter +=1
+    freq[2] = 0
+    freq[1] = 0
+end
+
 
 
 # arr = t.times.map { gets.to_i }.sort.reverse
